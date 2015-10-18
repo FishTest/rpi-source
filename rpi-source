@@ -361,7 +361,10 @@ if args.default_config or not kernel.config:
 else:
     info(".config")
     writef(os.path.join(linux_dir, '.config'), kernel.config)
-
+if sh_out("uname -r | grep +$"):
+    info("Add plus-sign to CONFIG_LOCALVERSION")
+    sh("sed -i 's/CONFIG_LOCALVERSION=\"-v7\"/CONFIG_LOCALVERSION\"-v7+\"/' %s" % os.path.join(linux_dir, '.config'))
+    
 info("Module.symvers")
 download_to(kernel.symvers, os.path.join(linux_dir, "Module.symvers"))
 sh("cd %s && cp -a Module.symvers Module.symvers.backup" % linux_dir)
